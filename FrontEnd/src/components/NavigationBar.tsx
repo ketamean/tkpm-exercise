@@ -9,15 +9,15 @@ export default function NavigationBar() {
             
             <div className='w-2/3 h-full flex flex-row justify-end items-center text-xl'>
                 <p className="w-30 font-bold flex justify-end">
-                    <a href='/'>Student</a>
+                    <a href='/students'>Student</a>
                 </p>
 
                 <p className="w-30 font-bold flex justify-end">
-                    <a href='/'>Faculty</a>
+                    <a href='/faculties'>Faculty</a>
                 </p>
 
                 <p className="w-30 font-bold flex justify-end">
-                    <a href='/'>Program</a>
+                    <a href='/programs'>Program</a>
                 </p>
             </div>
         </div>

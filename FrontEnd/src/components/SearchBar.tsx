@@ -14,7 +14,10 @@ export default function SearchBar(props: SearchBarProps): any {
                 e.preventDefault();
                 axios
                     .get(`http://localhost:3000/students?${(e.target as HTMLFormElement).criteria.value}=${(e.target as HTMLFormElement).searchContent.value}`)
-                    .then((res) => props.setStudents(res.data))
+                    .then((res) => {
+                        // console.log(res.data)
+                        props.setStudents(res.data)
+                    })
                     .catch((res) => {
                         console.error(res);
                         alert(res);
@@ -26,6 +29,7 @@ export default function SearchBar(props: SearchBarProps): any {
                 <option value="" disabled selected>Search by</option>
                 <option value="id">ID</option>
                 <option value="name">Name</option>
+                <option value="faculty">Faculty</option>
             </select>
             <div className="w-full h-full bg-gray-200 rounded-full col-span-11 relative">
                 <input name='searchContent' className="w-full h-full text-nowrap overflow-hidden px-4" placeholder="Enter searching criteria"/>

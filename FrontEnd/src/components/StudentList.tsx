@@ -2,8 +2,8 @@ import {Student} from '../models/Student'
 import { Faculty } from '../models/Faculty'
 import { Program } from '../models/Program'
 import { Status } from '../models/Status'
-import StudentTags from './StudentTags'
-
+import StudentListItem from './StudentListItem'
+import AbstractList from './AbstractList'
 interface StudentListProps {
     students: Student[];
     allPrograms: Program[];
@@ -13,9 +13,9 @@ interface StudentListProps {
 
 export default function StudentList(props: StudentListProps): any {
     return (
-        <table className='w-full'>
-            <thead>
-                <tr className='border-b-1 border-gray-300'>
+        <AbstractList
+            thead={
+                <>
                     <td className='w-24 pr-4'>Student ID</td>
                     <td className='w-40 pr-4'>Full name</td>
                     <td className='pr-4'>Date of birth</td>
@@ -27,21 +27,24 @@ export default function StudentList(props: StudentListProps): any {
                     <td className='pr-4'>Email</td>
                     <td className='pr-4'>Phone</td>
                     <td className='pr-4'>Status</td>
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    props.students.map((student: Student) => (
-                        <StudentTags
-                            student={student}
-                            allPrograms={props.allPrograms}
-                            allFaculties={props.allFaculties}
-                            allStatus={props.allStatus}
-                        />
-                    ))
-                }
-            </tbody>
- 
-        </table>
+                </>
+            }
+            tbody={
+                <>
+                    {
+                        props.students?.map((student: Student) => (
+                            <StudentListItem
+                                student={student}
+                                allPrograms={props.allPrograms}
+                                allFaculties={props.allFaculties}
+                                allStatus={props.allStatus}
+                                allowDelete={true}
+                                allowEdit={true}
+                            />
+                        ))
+                    }
+                </>
+            }
+        />
     )
 }
