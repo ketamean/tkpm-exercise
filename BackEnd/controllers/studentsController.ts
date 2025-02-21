@@ -38,9 +38,17 @@ const controller = {
 
     post: async (req: Request, res: Response): Promise<any> => {
         try {
-            console.log(req.body);
-            const student: IStudent = req.body;
-            const data = await studentModels.addNewStudent(student);
+            // console.log(req.body);
+            const student: IStudent | IStudent[] = req.body;
+            let data: IStudent[] = [];
+            if (Array.isArray(student)) {
+                student.forEach(async (stu: IStudent) => {
+                    data.concat(await studentModels.addNewStudent(stu))
+                })
+            } else {
+                data = await studentModels.addNewStudent(student);
+            }
+            
             return res.status(200).json(data);
         } catch (e) {
             console.log(e);
