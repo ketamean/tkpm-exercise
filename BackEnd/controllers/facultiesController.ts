@@ -5,7 +5,7 @@ export default {
     get: async (req: Request, res: Response): Promise<any> => {
         try {
             const data = await facultyModels.getAll();
-            return res.status(200).json(data);
+            return res.status(200).json({faculties: data});
         } catch (e) {
             console.log(e);
             return res.status(500).json(e);

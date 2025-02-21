@@ -21,7 +21,10 @@ export interface IStudent {
 
 const Student = {
     getAll: async () => {
-        const query = 'SELECT * FROM students;';
+        const query = `
+            SELECT s.id as id, s.name as name, s.dob as dob, s.gender as gender, f.name as faculty, s.year as year, p.name as program, s.address as address, s.email as email, s.phone as phone, sta.name as status
+            FROM students s, faculties f, programs p, status sta
+            WHERE s.faculty = f.id AND s.program = p.id AND s.status = sta.id;`;
         const values: any = []
         const res = await (client.query(query, values))
 
@@ -29,7 +32,10 @@ const Student = {
     },
 
     getById: async (id: string) => {
-        const query = 'SELECT * FROM students WHERE id = $1;';
+        const query = `
+            SELECT s.id as id, s.name as name, s.dob as dob, s.gender as gender, f.name as faculty, s.year as year, p.name as program, s.address as address, s.email as email, s.phone as phone, sta.name as status
+            FROM students s, faculties f, programs p, status sta
+            WHERE s.id = $1 AND s.faculty = f.id AND s.program = p.id AND s.status = sta.id;`;
         const values: any = [id]
         const res = await (client.query(query, values))
 
@@ -37,7 +43,10 @@ const Student = {
     },
 
     getByName: async (name: string) => {
-        const query = 'SELECT * FROM students WHERE name = $1;';
+        const query = `
+            SELECT s.id as id, s.name as name, s.dob as dob, s.gender as gender, f.name as faculty, s.year as year, p.name as program, s.address as address, s.email as email, s.phone as phone, sta.name as status
+            FROM students s, faculties f, programs p, status sta
+            WHERE s.name = $1 AND s.id = $1 AND s.faculty = f.id AND s.program = p.id AND s.status = sta.id;`;
         const values: any = [name]
         const res = await (client.query(query, values))
 

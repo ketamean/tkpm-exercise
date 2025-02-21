@@ -1,7 +1,7 @@
 import express from 'express'
 import router from './routers'
 import * as dotenv from 'dotenv';
-import multer from 'multer'; // For handling multipart/form-data
+// import multer from 'multer'; // For handling multipart/form-data
 import bodyParser from 'body-parser'; // For parsing JSON data
 import cors from 'cors';
 dotenv.config()
