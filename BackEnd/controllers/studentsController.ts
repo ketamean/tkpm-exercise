@@ -15,10 +15,13 @@ const controller = {
             const query = req.query;
             if (Object.keys(query).length === 0) {
                 const data = await studentModels.getAll();
-                console.log(data)
                 return res.status(200).json({...metadata, students: data});
             }
             // else
+            if (query.faculty) {
+                const data = await studentModels.getByFaculty(query.faculty as string);
+                return res.status(200).json({...metadata, students: data});
+            }
             if (query.id) {
                 const data = await studentModels.getById(query.id as string);
                 return res.status(200).json({...metadata, students: data});

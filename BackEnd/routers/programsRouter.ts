@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import facultiesController from '../controllers/facultiesController'
+import programsController from '../controllers/programsController'
 const router = Router();
 
-router.get('/', facultiesController.get);
-router.post('/', facultiesController.post);
-router.put('/', facultiesController.put);
+router.get('/', programsController.get);
+router.post('/', programsController.post);
+router.put('/', programsController.put);
 
 export default router;
