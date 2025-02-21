@@ -51,7 +51,7 @@ function AddModal(props: AddModalProps): any {
     )
 }
 
-function StudentMain(props: StudentMainProps): any {  
+function StudentMain(props: StudentMainProps): any {
     const [addModalState, setAddModalState] = useState(false);
     return (
         <>

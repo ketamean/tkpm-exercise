@@ -12,8 +12,10 @@ export default function SearchBar(props: SearchBarProps): any {
         <form className="w-full h-full grid grid-cols-12 gap-2 focus:outline-none focus:border-none"
             onSubmit={(e) => {
                 e.preventDefault();
+                const form = e.target as HTMLFormElement
+                if (!form.criteria.value) return;
                 axios
-                    .get(`http://localhost:3000/students?${(e.target as HTMLFormElement).criteria.value}=${(e.target as HTMLFormElement).searchContent.value}`)
+                    .get(`http://localhost:3000/students?${form.criteria.value}=${form.searchContent.value}`)
                     .then((res) => {
                         // console.log(res.data)
                         props.setStudents(res.data)

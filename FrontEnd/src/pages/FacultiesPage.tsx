@@ -17,7 +17,7 @@ function AddModal(props: AddModalProps) {
             const data = new FormData(e.target as HTMLFormElement);
             // console.log(data)
             axios
-                .post('http://localhost:3000/programs', data, {
+                .post('http://localhost:3000/faculties', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }

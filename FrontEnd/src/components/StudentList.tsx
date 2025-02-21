@@ -4,6 +4,7 @@ import { Program } from '../models/Program'
 import { Status } from '../models/Status'
 import StudentListItem from './StudentListItem'
 import AbstractList from './AbstractList'
+import { combineSlices } from '@reduxjs/toolkit'
 interface StudentListProps {
     students: Student[];
     allPrograms: Program[];
@@ -32,16 +33,26 @@ export default function StudentList(props: StudentListProps): any {
             tbody={
                 <>
                     {
-                        props.students?.map((student: Student) => (
-                            <StudentListItem
-                                student={student}
-                                allPrograms={props.allPrograms}
-                                allFaculties={props.allFaculties}
-                                allStatus={props.allStatus}
-                                allowDelete={true}
-                                allowEdit={true}
-                            />
-                        ))
+                        (() => {
+                            console.log('StudentList')
+                            console.log(props.students)
+                            return props.students?
+                                (
+                                    props.students.map((student: Student) => {
+                                        return (
+                                        <StudentListItem
+                                            student={student}
+                                            allPrograms={props.allPrograms}
+                                            allFaculties={props.allFaculties}
+                                            allStatus={props.allStatus}
+                                            allowDelete={true}
+                                            allowEdit={true}
+                                        />
+                                    )})
+                                ):
+                                <></>
+                        })()
+
                     }
                 </>
             }
