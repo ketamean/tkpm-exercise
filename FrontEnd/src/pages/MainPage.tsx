@@ -4,7 +4,7 @@ import SearchBar from '../components/SearchBar'
 import Modal from 'react-modal'
 import { useState } from 'react'
 import axios from 'axios'
-
+import NavigationBar from '../components/NavigationBar'
 interface MainPageProps {
     students: Student[];
     setStudents: (students: Student[]) => void;
@@ -105,11 +105,12 @@ function AddModal(props: AddModalProps): any {
     )
 }
 
-export default function MainPage(props: MainPageProps): any {
+export default function MainPage(props: MainPageProps): any {  
     const [addModalState, setAddModalState] = useState(false);
     return (
-        <>
-            <div className='p-4 bg-white rounded-lg flex flex-col gap-4 h-full w-full'>
+        <div className='flex flex-col items-center justify-center bg-zinc-200 rounded-lg'>
+            <NavigationBar />
+            <div className='p-4 bg-white rounded-b-lg flex flex-col gap-4 h-full w-full'>
                 <div className='grid grid-cols-12 gap-4 h-10'>
                     <div className='col-span-10 p-0 h-full'>
                         <SearchBar students={props.students} setStudents={props.setStudents}/>
@@ -131,6 +132,6 @@ export default function MainPage(props: MainPageProps): any {
                 <StudentList students={props.students}/>
             </div>
             <AddModal addModalState={addModalState} setAddModalState={setAddModalState}/>
-        </>
+        </div>
     )
 }

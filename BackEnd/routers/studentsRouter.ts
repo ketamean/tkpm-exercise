@@ -1,5 +1,4 @@
-import { RequestHandler, Router } from 'express';
-import { Request, Response } from 'express';
+import { Router } from 'express';
 import studentController from '../controllers/studentsController'
 const router = Router();
 

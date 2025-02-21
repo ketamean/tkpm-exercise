@@ -34,6 +34,5 @@ export default function SearchBar(props: SearchBarProps): any {
                 </button>
             </div>
         </form>
-        
     )
 }
