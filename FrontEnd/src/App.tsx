@@ -1,44 +1,31 @@
 import MainPage from './pages/MainPage'
-import { Student } from './models/Student'
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Student } from './models/Student'
+import { Faculty } from './models/Faculty'
+import { Program } from './models/Program'
+import { Status } from './models/Status'
 
-class StudentImpl implements Student {
-  id: string = '';
-  name: string = '';
-  dob: string = '';
-  gender: string = '';
-  faculty: string = '';
-  year: number = 0;
-  program: string = '';
-  address: string = '';
-  email: string = '';
-  phone: string = '';
-  status: string = '';
-
-  constructor() {
-    this.id = '22127777';
-    this.name = 'Truong Nguyen Huynh Thi';
-    this.dob = '2000-1-1';
-    this.gender = 'Female';
-    this.faculty = 'Software Engineering';
-    this.year = 2020;
-    this.program = 'TT';
-    this.address = '123 Main St, Springfield, IL';
-    this.email = 'truong@gmail.com';
-    this.phone = '1234567890';
-    this.status = 'Graduated';
-  }
+interface MetadataState {
+  programs: Program[];
+  faculties: Faculty[];
+  status: Status[];
 }
 
 export default function App() {
+  const [metadata, setMetadata] = useState<MetadataState>({programs:[], status: [], faculties: []});
   const [students, setStudents] = useState<Student[]>([]);
   useEffect(() => {
     try {
       axios
-        .get('http://localhost:3000/')
+        .get('http://localhost:3000/students')
         .then((res) => {
-          setStudents(res.data)
+          setMetadata({
+            programs: res.data.programs,
+            faculties: res.data.faculties,
+            status: res.data.status
+          })
+          setStudents(res.data.students)
         })
     } catch (e) {
       console.error(e);
@@ -51,6 +38,9 @@ export default function App() {
       <MainPage
         students={students}
         setStudents={setStudents}
+        programs={metadata.programs}
+        faculties={metadata.faculties}
+        status={metadata.status}
       />
     </div>
 

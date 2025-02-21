@@ -1,5 +1,8 @@
 import StudentList from '../components/StudentList'
 import { Student } from '../models/Student'
+import { Faculty } from '../models/Faculty'
+import { Program } from '../models/Program'
+import { Status } from '../models/Status'
 import SearchBar from '../components/SearchBar'
 import Modal from 'react-modal'
 import { useState } from 'react'
@@ -7,11 +10,17 @@ import axios from 'axios'
 import NavigationBar from '../components/NavigationBar'
 interface MainPageProps {
     students: Student[];
+    programs: Program[];
+    faculties: Faculty[];
+    status: Status[];
     setStudents: (students: Student[]) => void;
 }
 
 interface AddModalProps {
     addModalState: boolean;
+    programs: Program[];
+    faculties: Faculty[];
+    status: Status[];
     setAddModalState: (state: boolean) => void;
 }
 
@@ -30,7 +39,7 @@ function AddModal(props: AddModalProps): any {
                     const data = new FormData(e.target as HTMLFormElement);
                     console.log(data)
                     axios
-                        .post('http://localhost:3000/', data, {
+                        .post('http://localhost:3000/students', data, {
                             headers: {
                                 'Content-Type': 'application/json'
                             }
@@ -61,8 +70,13 @@ function AddModal(props: AddModalProps): any {
                 <label htmlFor="program" className='col-span-2'>Program</label>
                 <select name="program" id="program" className='col-span-2 border-b-1'>
                     <option value="" disabled>Choose a program</option>
-                    <option value="CLC">CLC</option>
-                    <option value="TT">TT</option>
+                    {
+                        (() => {
+                            return props.programs.map((prog: Program) => (
+                                <option value={prog.id}>{prog.name}</option>
+                            ))
+                        })()
+                    }
                 </select>
 
                 <label htmlFor="email" className='col-span-2'>Email</label>
@@ -73,11 +87,18 @@ function AddModal(props: AddModalProps): any {
 
                 <label htmlFor="status" className='col-span-2'>Status</label>
                 <select name="status" id="status" className='col-span-2 border-b-1'>
-                    <option value="" disabled>Choose a status</option>
+                    {/* <option value="" disabled>Choose a status</option>
                     <option value="Undergraduate">Undergraduate</option>
                     <option value="Graduated">Graduated</option>
                     <option value="Dropped">Dropped</option>
-                    <option value="Pause">Pause</option>
+                    <option value="Pause">Pause</option> */}
+                    {
+                        (() => {
+                            return props.status.map((status: Status) => (
+                                <option value={status.id}>{status.name}</option>
+                            ))
+                        })()
+                    }
                 </select>
 
                 <label htmlFor="phone" className='col-span-2'>Phone</label>
@@ -86,10 +107,17 @@ function AddModal(props: AddModalProps): any {
                 <label htmlFor="faculty" className='col-span-2'>Faculty</label>
                 <select name="faculty" id="faculty" className='col-span-2 border-b-1'>
                     <option value="" disabled>Choose a faculty</option>
-                    <option value="Tiếng Nhật">Tiếng Nhật</option>
+                    {/* <option value="Tiếng Nhật">Tiếng Nhật</option>
                     <option value="Luật">Luật</option>
                     <option value="Tiếng Anh thương mại">Tiếng Anh thương mại</option>
-                    <option value="Tiếng Pháp">Tiếng Pháp</option>
+                    <option value="Tiếng Pháp">Tiếng Pháp</option> */}
+                    {
+                        (() => {
+                            return props.faculties.map((faculty: Status) => (
+                                <option value={faculty.id}>{faculty.name}</option>
+                            ))
+                        })()
+                    }
                 </select>
 
                 <div className='col-span-12 flex flex-row justify-center gap-12 items-center pt-8'>
@@ -129,9 +157,14 @@ export default function MainPage(props: MainPageProps): any {
                         See all
                     </button>
                 </div>
-                <StudentList students={props.students}/>
+                <StudentList
+                    students={props.students}
+                    allPrograms={props.programs}
+                    allFaculties={props.faculties}
+                    allStatus={props.status}
+                />
             </div>
-            <AddModal addModalState={addModalState} setAddModalState={setAddModalState}/>
+            <AddModal addModalState={addModalState} programs={props.programs} faculties={props.faculties} status={props.status} setAddModalState={setAddModalState}/>
         </div>
     )
 }

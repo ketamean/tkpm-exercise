@@ -1,8 +1,14 @@
 import {Student} from '../models/Student'
+import { Faculty } from '../models/Faculty'
+import { Program } from '../models/Program'
+import { Status } from '../models/Status'
 import StudentTags from './StudentTags'
 
 interface StudentListProps {
     students: Student[];
+    allPrograms: Program[];
+    allStatus: Status[];
+    allFaculties: Faculty[];
 }
 
 export default function StudentList(props: StudentListProps): any {
@@ -26,7 +32,12 @@ export default function StudentList(props: StudentListProps): any {
             <tbody>
                 {
                     props.students.map((student: Student) => (
-                        <StudentTags student={student} />
+                        <StudentTags
+                            student={student}
+                            allPrograms={props.allPrograms}
+                            allFaculties={props.allFaculties}
+                            allStatus={props.allStatus}
+                        />
                     ))
                 }
             </tbody>

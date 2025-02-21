@@ -13,7 +13,7 @@ export default function SearchBar(props: SearchBarProps): any {
             onSubmit={(e) => {
                 e.preventDefault();
                 axios
-                    .get(`http://localhost:3000?${(e.target as HTMLFormElement).criteria.value}=${(e.target as HTMLFormElement).searchContent.value}`)
+                    .get(`http://localhost:3000/students?${(e.target as HTMLFormElement).criteria.value}=${(e.target as HTMLFormElement).searchContent.value}`)
                     .then((res) => props.setStudents(res.data))
                     .catch((res) => {
                         console.error(res);
