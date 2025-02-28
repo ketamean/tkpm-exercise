@@ -89,14 +89,14 @@ function Config(props: ConfigProps): ReactElement {
                 <label className="w-1/5 min-w-48 max-w-60 h-8 font-semibold">Email patterns</label>
                 <table className="w-full h-full pl-8">
                     <tbody>
-                        {
-                            emailPatterns.map((pattern, index) => (
-                                <tr className="w-full h-8 gap-x-6 border-b-1 border-gray-300">
-                                    <td><span className="mr-2">{index + 1}</span></td>
-                                    <td>{pattern.toString()}</td>
-                                </tr>
-                            ))
-                        }
+                    {
+                        emailPatterns.map((pattern, index) => (
+                            <tr className="w-full h-8 gap-x-6 border-b-1 border-gray-300">
+                                <td><span className="mr-2">{index + 1}</span></td>
+                                <td>{pattern.toString()}</td>
+                            </tr>
+                        ))
+                    }
                     </tbody>
                 </table>
                 <button
