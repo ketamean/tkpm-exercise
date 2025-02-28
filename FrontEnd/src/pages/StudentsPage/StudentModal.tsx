@@ -1,8 +1,8 @@
 import { FormEvent } from 'react';
-import { Student } from '../models/Student'
-import { Faculty } from '../models/Faculty'
-import { Program } from '../models/Program'
-import { Status } from '../models/Status'
+import { Student } from '../../models/Student'
+import { Faculty } from '../../models/Faculty'
+import { Program } from '../../models/Program'
+import { Status } from '../../models/Status'
 import Modal from 'react-modal'
 interface StudentModal {
     onSubmit: (e: FormEvent) => void;
@@ -39,7 +39,16 @@ export default function StudentModal(props: StudentModal): any {
                 </select>
 
                 <label htmlFor="dob" className='col-span-2'>Date of birth</label>
-                <input defaultValue={props.initValue?.dob} name='dob' type="date" className='col-span-3 border-b-1'/>
+                {
+                    (() => {
+                        try {
+                            return <input defaultValue={props.initValue?.dob} name='dob' type="date" className='col-span-3 border-b-1'/>
+                        } catch (e) {
+                            return <input name='dob' type="date" className='col-span-3 border-b-1'/>
+                        }
+                    })()
+                }
+                
 
                 <label htmlFor="year" className='col-span-1'>Year</label>
                 <input defaultValue={props.initValue?.year} name='year' type="text" className='col-span-2 border-b-1'  />

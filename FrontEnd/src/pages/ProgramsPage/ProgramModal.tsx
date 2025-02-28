@@ -1,13 +1,12 @@
 import { FormEvent } from 'react';
-import { Program } from '../models/Program'
 import Modal from 'react-modal'
 
 interface ProgramModalProps {
     onSubmit: (e: FormEvent) => void;
     state: boolean; // open / close
     setState: (state: boolean) => void;
-    allPrograms: Program[];
-    initValue?: Program;
+    allData?: Array<{id: string| number, name: string}>;
+    initValue?: {id: string | number, name: string};
 }
 export default function ProgramModal(props: ProgramModalProps): any {
     return (

@@ -1,11 +1,11 @@
-import { Program } from '../models/Program'
-import AbstractList from './AbstractList'
-import ProgramListItem from './ProgramListItem'
-interface ProgramListProps {
-    allPrograms: Program[];
+import { Faculty } from '../../models/Faculty'
+import AbstractList from '../../components/AbstractList'
+import FacultyListItem from './FacultyListItem'
+interface FacultyListProps {
+    allPrograms: Faculty[];
 }
 
-export default function ProgramList(props: ProgramListProps): any {
+export default function FacultyList(props: FacultyListProps): any {
     return (
         <AbstractList
             thead={
@@ -17,10 +17,10 @@ export default function ProgramList(props: ProgramListProps): any {
             tbody={
                 <>
                     {
-                        props.allPrograms?.map((program: Program) => (
-                            <ProgramListItem
-                                program={program}
-                                allPrograms={props.allPrograms}
+                        props.allPrograms?.map((faculty: Faculty) => (
+                            <FacultyListItem
+                                faculty={faculty}
+                                allData={props.allPrograms}
                                 allowDelete={false}
                                 allowEdit={false}
                             />

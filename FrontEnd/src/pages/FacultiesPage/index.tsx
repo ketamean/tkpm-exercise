@@ -1,11 +1,12 @@
 import { useState, useEffect, FormEvent } from "react";
 import axios from "axios";
-import { Program } from '../models/Program'
-import ProgramModal from '../components/ProgramModal'
-import AbstractList from "../components/AbstractList";
-import ProgramListItem from "../components/ProgramListItem";
+import { Program } from '../../models/Program'
+import ProgramModal from '../ProgramsPage/ProgramModal'
+import AbstractList from "../../components/AbstractList";
+import FacultyListItem from "./FacultyListItem";
+import { Faculty } from "../../models/Faculty";
 interface AddModalProps {
-    allPrograms: Program[];
+    allData: Program[];
     modalState: boolean;
     setModalState: (s: boolean) => void;
 }
@@ -17,7 +18,7 @@ function AddModal(props: AddModalProps) {
             const data = new FormData(e.target as HTMLFormElement);
             // console.log(data)
             axios
-                .post('http://localhost:3000/programs', data, {
+                .post('http://localhost:3000/faculties', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -27,30 +28,30 @@ function AddModal(props: AddModalProps) {
         }}
             state={props.modalState}
             setState={props.setModalState}
-            allPrograms={props.allPrograms}
+            allData={props.allData}
         />
     )
 }
 
-interface ProgramListProps {
-    allPrograms: Program[];
+interface FacultyListProps {
+    allFaculty: Faculty[];
 }
-function ProgramList(props: ProgramListProps) {
+function FacultyList(props: FacultyListProps) {
     return (
         <AbstractList
             thead={
                 <>
-                    <td className='w-24 pr-4'>ID</td>
+                    {/* <td className='w-24 pr-4'>ID</td> */}
                     <td className='w-40 pr-4'>Names</td>
                 </>
             }
             tbody={
                 <>
                     {
-                        props.allPrograms?.map((program: Program) => (
-                            <ProgramListItem
-                                program={program}
-                                allPrograms={props.allPrograms}
+                        props.allFaculty?.map((faculty: Faculty) => (
+                            <FacultyListItem
+                                faculty={faculty}
+                                allData={props.allFaculty}
                                 allowDelete={false}
                                 allowEdit={false}
                             />
@@ -62,8 +63,8 @@ function ProgramList(props: ProgramListProps) {
     )
 }
 
-export default function ProgramsPage() {
-    const [programs, setPrograms] = useState<Program[]>([]);
+export default function FacultiesPage() {
+    const [faculties, setFaculties] = useState<Faculty[]>([]);
     const [addModalState, setAddModalState] = useState<boolean>(false)
     useEffect(() => {
       try {
@@ -71,13 +72,13 @@ export default function ProgramsPage() {
           .get('http://localhost:3000/programs')
           .then((res) => {
             console.log(res)
-            setPrograms(res.data.programs)
+            setFaculties(res.data.faculties)
           })
       } catch (e) {
         console.error(e);
         alert(e);
       }
-    }, [programs]);
+    }, [faculties]);
   
     return (
         <>
@@ -100,9 +101,9 @@ export default function ProgramsPage() {
                         See all
                     </button>
                 </div>
-                <ProgramList allPrograms={programs}/>
+                <FacultyList allFaculty={faculties}/>
             </div>
-            <AddModal modalState={addModalState} setModalState={setAddModalState} allPrograms={programs}/>
+            <AddModal modalState={addModalState} setModalState={setAddModalState} allData={faculties}/>
             
         </>
         // <StudeAddModalntMain

@@ -13,12 +13,23 @@ export default function SearchBar(props: SearchBarProps): any {
             onSubmit={(e) => {
                 e.preventDefault();
                 const form = e.target as HTMLFormElement
-                if (!form.criteria.value) return;
+                if (!form.criteria.value) {
+                    alert('Please choose searching criteria');
+                    return;
+                }
+                // const normalizedStr = (form.searchContent.value as string).normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+                // let searchValue = ''
+                // if (form.searchContent.value as string === normalizedStr) {
+
+                // }
                 axios
                     .get(`http://localhost:3000/students?${form.criteria.value}=${form.searchContent.value}`)
                     .then((res) => {
                         // console.log(res.data)
-                        props.setStudents(res.data)
+                        if (res.data?.students)
+                            props.setStudents(res.data.students)
+                        else
+                            props.setStudents([])
                     })
                     .catch((res) => {
                         console.error(res);

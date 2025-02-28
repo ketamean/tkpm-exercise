@@ -1,9 +1,10 @@
 import { useState, useEffect, FormEvent } from "react";
 import axios from "axios";
-import { Program } from '../models/Program'
-import ProgramModal from '../components/ProgramModal'
-import AbstractList from "../components/AbstractList";
-import ProgramListItem from "../components/ProgramListItem";
+import { Program } from '../../models/Program'
+import ProgramModal from './ProgramModal'
+import ProgramList from "./ProgramList";
+import AbstractList from "../../components/AbstractList";
+import ProgramListItem from "./ProgramListItem";
 interface AddModalProps {
     allPrograms: Program[];
     modalState: boolean;
@@ -17,7 +18,7 @@ function AddModal(props: AddModalProps) {
             const data = new FormData(e.target as HTMLFormElement);
             // console.log(data)
             axios
-                .post('http://localhost:3000/faculties', data, {
+                .post('http://localhost:3000/programs', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -27,37 +28,7 @@ function AddModal(props: AddModalProps) {
         }}
             state={props.modalState}
             setState={props.setModalState}
-            allPrograms={props.allPrograms}
-        />
-    )
-}
-
-interface ProgramListProps {
-    allPrograms: Program[];
-}
-function ProgramList(props: ProgramListProps) {
-    return (
-        <AbstractList
-            thead={
-                <>
-                    <td className='w-24 pr-4'>ID</td>
-                    <td className='w-40 pr-4'>Names</td>
-                </>
-            }
-            tbody={
-                <>
-                    {
-                        props.allPrograms?.map((program: Program) => (
-                            <ProgramListItem
-                                program={program}
-                                allPrograms={props.allPrograms}
-                                allowDelete={false}
-                                allowEdit={false}
-                            />
-                        ))
-                    }
-                </>
-            }
+            // allData={props.allPrograms}
         />
     )
 }

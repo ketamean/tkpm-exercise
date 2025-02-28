@@ -1,10 +1,9 @@
-import {Student} from '../models/Student'
-import { Faculty } from '../models/Faculty'
-import { Program } from '../models/Program'
-import { Status } from '../models/Status'
+import {Student} from '../../models/Student'
+import { Faculty } from '../../models/Faculty'
+import { Program } from '../../models/Program'
+import { Status } from '../../models/Status'
 import StudentListItem from './StudentListItem'
-import AbstractList from './AbstractList'
-import { combineSlices } from '@reduxjs/toolkit'
+import AbstractList from '../../components/AbstractList'
 interface StudentListProps {
     students: Student[];
     allPrograms: Program[];
@@ -34,8 +33,7 @@ export default function StudentList(props: StudentListProps): any {
                 <>
                     {
                         (() => {
-                            console.log('StudentList')
-                            console.log(props.students)
+                            console.log(`StudentList: ${Object.keys(props.students)}`)
                             return props.students?
                                 (
                                     props.students.map((student: Student) => {
