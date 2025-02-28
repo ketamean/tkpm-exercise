@@ -5,7 +5,7 @@ interface ProgramModalProps {
     onSubmit: (e: FormEvent) => void;
     state: boolean; // open / close
     setState: (state: boolean) => void;
-    allData?: Array<{id: string| number, name: string}>;
+    // allData?: Array<{id: string| number, name: string}>;
     initValue?: {id: string | number, name: string};
 }
 export default function ProgramModal(props: ProgramModalProps): any {

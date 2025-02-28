@@ -1,12 +1,29 @@
+import { isContext } from 'vm';
+import { getAdminConfig } from '../config/adminConfig/adminConfig'
+
 class Verifier {
-    email(email: string): boolean {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      return emailRegex.test(email);
+    async email(email: string): Promise<boolean> {
+      const config = await getAdminConfig();
+      if (config && config.applyFlag && config.emailPatterns) {
+        (config.emailPatterns as Array<RegExp>).forEach((regex: RegExp) => {
+          if (regex.test(email)) {
+            console.log(regex)
+            return true
+          }
+        })
+        return false
+      }
+      // else
+      return true
     }
   
-    phoneNumber(phoneNumber: string): boolean {
-      const phoneRegex = /^\d{10}$/;
-      return phoneRegex.test(phoneNumber);
+    async phoneNumber(phoneNumber: string): Promise<boolean> {
+      const config = await getAdminConfig();
+      if (config && config.applyFlag && config.phonenumberPattern) {
+        return (config.phonenumberPattern as RegExp).test(phoneNumber);
+      }
+      // else
+      return true
     }
   
     // facultyName(facultyName: string): boolean {

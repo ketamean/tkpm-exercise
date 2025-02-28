@@ -1,42 +1,42 @@
 // import { Program } from '../../models/Program'
-import { Faculty } from '../../models/Faculty' 
+import { Status } from '../../models/Status' 
 import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
 import axios from 'axios'
-import FacultyModal from '../ProgramsPage/ProgramModal'
+import StatusModal from '../ProgramsPage/ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
 
 Modal.setAppElement('#root')
 
-interface FacultyListItemProps {
-    faculty: Faculty;
-    allData: Faculty[];
+interface StatusListItemProps {
+    status: Status;
+    allData: Status[];
     allowDelete?: boolean;
     allowEdit?: boolean;
 }
 
 interface UpdateModalProps {
-    allFaculties: Faculty[];
+    allStatus: Status[];
     modalState: boolean;
     setModalState: (state: boolean) => void;
-    currentFaculty: Faculty;
+    currentStatus: Status;
 }
 
 interface DeleteModalProps {
     deleteModalState: boolean;
     setDeleteModalState: (state: boolean) => void;
-    faculty: Faculty;
+    status: Status;
 }
 
 function UpdateModal(props: UpdateModalProps) {
     return (
-        <FacultyModal
+        <StatusModal
             onSubmit={(e: FormEvent) => {
                 e.preventDefault()
                 axios
-                    .put(`http://localhost:3000/faculties?id=${props.currentFaculty.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
+                    .put(`http://localhost:3000/status?id=${props.currentStatus.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
                     .then(() => window.location.reload())
                     .catch((err) => {
                         alert(err.message)
@@ -45,8 +45,8 @@ function UpdateModal(props: UpdateModalProps) {
             }}
             state={props.modalState}
             setState={props.setModalState}
-            // allData={props.allFaculties}
-            initValue={props.currentFaculty}
+            // allData={props.allStatus}
+            initValue={props.currentStatus}
         />
     )
 }
@@ -65,7 +65,7 @@ function DeleteModal(props: DeleteModalProps): any {
                 onSubmit={(e: FormEvent) => {
                     e.preventDefault();
                     axios
-                        .delete(`http://localhost:3000/faculties?id=${props.faculty.id}`)
+                        .delete(`http://localhost:3000/status?id=${props.status.id}`)
                         .then(() => window.location.reload())
                         .catch((e) => {
                             console.log(e.message)
@@ -80,7 +80,7 @@ function DeleteModal(props: DeleteModalProps): any {
     )
 }
 
-export default function FacultyListItem(props: FacultyListItemProps): any {
+export default function StatusListItem(props: StatusListItemProps): any {
     const [updateModalState, setUpdateModalState] = useState(false);
     const [deleteModalState, setDeleteModalState] = useState(false);
 
@@ -91,17 +91,17 @@ export default function FacultyListItem(props: FacultyListItemProps): any {
                 // </tr>
                 <>
                     {/* <td className='text-wrap w-24 pr-4'>{props.program.id}</td> */}
-                    <td className='text-wrap w-full pr-4'>{props.faculty.name}</td>
+                    <td className='text-wrap w-full pr-4'>{props.status.name}</td>
                     <td className='h-full pr-2 cursor-pointer' onClick={() => setUpdateModalState(true)}><img src={editIcon} alt="Update program's info" title="Update program's info" /></td>
                     <td className='h-full pr-2 cursor-pointer' onClick={() => setDeleteModalState(true)}><img src={deleteIcon} alt="Delete student" title="Delete student" /></td>
                 </>
                 
             }
             updateModal={
-                <UpdateModal allFaculties={props.allData} modalState={updateModalState} setModalState={setUpdateModalState} currentFaculty={props.faculty} />
+                <UpdateModal allStatus={props.allData} modalState={updateModalState} setModalState={setUpdateModalState} currentStatus={props.status} />
             }
             deleteModal={
-                <DeleteModal deleteModalState={deleteModalState} setDeleteModalState={setDeleteModalState} faculty={props.faculty}/>
+                <DeleteModal deleteModalState={deleteModalState} setDeleteModalState={setDeleteModalState} status={props.status}/>
             }
         />
     )

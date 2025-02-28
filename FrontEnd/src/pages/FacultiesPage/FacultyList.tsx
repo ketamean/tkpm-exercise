@@ -2,7 +2,7 @@ import { Faculty } from '../../models/Faculty'
 import AbstractList from '../../components/AbstractList'
 import FacultyListItem from './FacultyListItem'
 interface FacultyListProps {
-    allPrograms: Faculty[];
+    allFaculty: Faculty[];
 }
 
 export default function FacultyList(props: FacultyListProps): any {
@@ -10,17 +10,16 @@ export default function FacultyList(props: FacultyListProps): any {
         <AbstractList
             thead={
                 <>
-                    <td className='w-24 pr-4'>ID</td>
                     <td className='w-40 pr-4'>Name</td>
                 </>
             }
             tbody={
                 <>
                     {
-                        props.allPrograms?.map((faculty: Faculty) => (
+                        props.allFaculty?.map((faculty: Faculty) => (
                             <FacultyListItem
                                 faculty={faculty}
-                                allData={props.allPrograms}
+                                allData={props.allFaculty}
                                 allowDelete={false}
                                 allowEdit={false}
                             />

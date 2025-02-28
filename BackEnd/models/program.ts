@@ -27,6 +27,7 @@ const Program = {
     },
 
     updateProgramNameById: async (id: number, name: string): Promise<IProgram[] | []> => {
+        console.log(`name: ${name}`)
         if (!name) throw new Error('Invalid program name')
 
         const query = 'UPDATE programs SET name = $1 WHERE id = $2 RETURNING *;'
@@ -44,6 +45,22 @@ const Program = {
         const res = await (client.query(query, values))
 
         return res.rows as IProgram[] | [];
+    },
+
+    deleteByName: async (name: string): Promise<IProgram[] | []> => {
+        const query = 'DELETE FROM programs WHERE name = $1 RETURNING *;'
+        const values: any = [name]
+        const res = await (client.query(query, values))
+
+        return res.rows as IProgram[] | [];
+    },
+
+    deleteById: async (id: number): Promise<IProgram[] | []> => {
+        const query = 'DELETE FROM programs WHERE id = $1 RETURNING *;'
+        const values: any = [id]
+        const res = await (client.query(query, values))
+
+        return res.rows;
     }
 }
 

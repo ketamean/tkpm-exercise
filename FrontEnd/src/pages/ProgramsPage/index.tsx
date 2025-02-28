@@ -1,10 +1,8 @@
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Program } from '../../models/Program'
 import ProgramModal from './ProgramModal'
 import ProgramList from "./ProgramList";
-import AbstractList from "../../components/AbstractList";
-import ProgramListItem from "./ProgramListItem";
 interface AddModalProps {
     allPrograms: Program[];
     modalState: boolean;
@@ -41,22 +39,18 @@ export default function ProgramsPage() {
         axios
           .get('http://localhost:3000/programs')
           .then((res) => {
-            console.log(res)
             setPrograms(res.data.programs)
           })
       } catch (e) {
         console.error(e);
         alert(e);
       }
-    }, [programs]);
+    }, []);
   
     return (
         <>
             <div className='p-4 bg-white rounded-b-lg flex flex-col gap-4 h-full w-full'>
                 <div className='grid grid-cols-12 gap-4 h-10 w-full'>
-                    {/* <div className='col-span-10 p-0 h-full'>
-                        <SearchBar students={props.students} setStudents={props.setStudents}/>
-                    </div> */}
                     <button
                         className='text-white col-start-11 col-span-1 self-end rounded-xl bg-black h-full cursor-pointer hover:bg-zinc-700'
                         onClick={() => setAddModalState(true)}
@@ -74,7 +68,6 @@ export default function ProgramsPage() {
                 <ProgramList allPrograms={programs}/>
             </div>
             <AddModal modalState={addModalState} setModalState={setAddModalState} allPrograms={programs}/>
-            
         </>
         // <StudeAddModalntMain
         //     students={students}

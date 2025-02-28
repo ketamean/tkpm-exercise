@@ -92,7 +92,9 @@ const Student = {
     },
 
     addNewStudent: async (student: IStudent) => {
-        if (!verifier.email(student.email) || !verifier.phoneNumber(student.phone)) throw new Error('Invalid format of data: email or phone number');
+        if (!(await verifier.email(student.email))) throw new Error('Invalid format of data: email');
+        if (!(await verifier.phoneNumber(student.phone))) throw new Error('Invalid format of data: phone number');
+
         try {
             const query = 'INSERT INTO students(id, studentid, name, dob, gender, faculty, year, program, address, email, phone, status) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *;'
             const values: any = [student.id, student.name, student.dob, student.gender, student.faculty, student.year, student.program, student.address, student.email, student.phone, student.status]
@@ -113,18 +115,17 @@ const Student = {
     },
 
     updateStudentById: async (id: string, student: IStudent) => {
-        if (!verifier.email(student.email) || !verifier.phoneNumber(student.phone)) throw new Error('Invalid format of data: email or phone number');
-
+        if (!(await verifier.email(student.email))) throw new Error('Invalid format of data: email');
+        if (!(await verifier.phoneNumber(student.phone))) throw new Error('Invalid format of data: phone number');
         let query = `
             UPDATE students
-            SET id = $1, name = $2, dob = $3, gender = $4, faculty = $5, year = $6, program = $7, address = $8, email = $9, phone = $10, status = $11
-            WHERE id = $12
+            SET studentid = $1, name = $2, dob = $3, gender = $4, faculty = $5, year = $6, program = $7, address = $8, email = $9, phone = $10, status = $11
+            WHERE studentid = $12
             RETURNING *;
         `;
         let values = [student.id, student.name, student.dob, student.gender, student.faculty, student.year, student.program, student.address, student.email, student.phone, student.status, id];
 
         const res = await (client.query(query, values));
-
         return res.rows;
     }
 }

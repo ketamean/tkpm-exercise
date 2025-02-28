@@ -2,7 +2,9 @@ import StudentsPage from './pages/StudentsPage'
 import NavigationBar from './components/NavigationBar';
 import ProgramsPage from './pages/ProgramsPage';
 import FacultiesPage from './pages/FacultiesPage';
+import StatusPage from './pages/StatusPage';
 import { Routes, Route } from "react-router-dom";
+import Admin from './pages/Admin';
 
 export default function App() {
   return (
@@ -13,6 +15,8 @@ export default function App() {
         <Route path="/students" element={<StudentsPage />} />
         <Route path="/programs" element={<ProgramsPage />} />
         <Route path="/faculties" element={<FacultiesPage />} />
+        <Route path="/status" element={<StatusPage />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </div>
   )

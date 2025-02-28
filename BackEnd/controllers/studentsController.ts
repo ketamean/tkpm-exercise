@@ -59,9 +59,9 @@ const controller = {
             }
 
             return res.status(200).json({...metadata, students: data});
-        } catch (e) {
+        } catch (e: any) {
             console.log(`studentsController.get error: ${e}`);
-            return res.status(500).json(e);
+            return res.status(500).json(e.message);
         }
     },
 
@@ -92,9 +92,9 @@ const controller = {
             }
             
             return res.status(200).json(message);
-        } catch (e) {
+        } catch (e: any) {
             console.log(`studentsController.post error: ${e}`);
-            return res.status(500).json(e);
+            return res.status(500).json(e.message);
         }
     },
 
@@ -104,9 +104,12 @@ const controller = {
             const student: IStudent = req.body;
             const data = await studentModels.updateStudentById(query.id as string, student);
             return res.status(200).json(data);
-        } catch (e) {
+        } catch (e: any) {
             console.log(e);
-            return res.status(500).json(e);
+            if (e.message)
+                return res.status(500).json(e.message);
+            else
+                return res.status(500).json(e);
         }
     },
 

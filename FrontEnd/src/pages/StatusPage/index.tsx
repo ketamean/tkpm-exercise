@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Faculty } from '../../models/Faculty'
-import FacultyModal from '../ProgramsPage/ProgramModal'
+import { Status } from '../../models/Status'
+import StatusModal from '../ProgramsPage/ProgramModal'
 // import AbstractList from "../../components/AbstractList";
-import FacultyList from "./FacultyList";
+import StatusList from "./StatusList";
 
 interface AddModalProps {
-    allData: Faculty[];
+    allData: Status[];
     modalState: boolean;
     setModalState: (s: boolean) => void;
 }
 function AddModal(props: AddModalProps) {
     return (
-        <FacultyModal
+        <StatusModal
         onSubmit={(e) => {
             e.preventDefault();
             const data = new FormData(e.target as HTMLFormElement);
             // console.log(data)
             axios
-                .post('http://localhost:3000/faculties', data, {
+                .post('http://localhost:3000/status', data, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -33,15 +33,16 @@ function AddModal(props: AddModalProps) {
     )
 }
 
-export default function FacultiesPage() {
-    const [faculties, setFaculties] = useState<Faculty[]>([]);
+export default function StatusPage() {
+    const [status, setStatus] = useState<Status[]>([]);
     const [addModalState, setAddModalState] = useState<boolean>(false)
     useEffect(() => {
       try {
         axios
-          .get('http://localhost:3000/faculties')
+          .get('http://localhost:3000/status')
           .then((res) => {
-            setFaculties(res.data.faculties)
+            console.log(res.data)
+            setStatus(res.data.status)
           })
       } catch (e) {
         console.error(e);
@@ -70,16 +71,16 @@ export default function FacultiesPage() {
                         See all
                     </button>
                 </div>
-                <FacultyList allFaculty={faculties}/>
+                <StatusList allStatus={status}/>
             </div>
-            <AddModal modalState={addModalState} setModalState={setAddModalState} allData={faculties}/>
+            <AddModal modalState={addModalState} setModalState={setAddModalState} allData={status}/>
             
         </>
         // <StudeAddModalntMain
         //     students={students}
         //     setStudents={setStudents}
         //     programs={metadata.programs}
-        //     faculties={metadata.faculties}
+        //     status={metadata.status}
         //     status={metadata.status}
         // />
     )

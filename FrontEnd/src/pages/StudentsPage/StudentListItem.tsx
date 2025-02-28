@@ -51,6 +51,10 @@ function UpdateModal(props: UpdateModalProps): any {
                         }
                     })
                     .then(() => window.location.reload())
+                    .catch((err) => {
+                        alert(err)
+                        props.setUpdateModalState(false)
+                    })
             }}
             state={props.updateModalState}
             setState={props.setUpdateModalState}

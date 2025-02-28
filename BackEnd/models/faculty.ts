@@ -1,5 +1,6 @@
 import client from '../config/database'
 import isNumericString from '../utils/checkNumericString'
+import { IProgram } from './program';
 export interface IFaculty {
     id: number;
     name: string;
@@ -41,6 +42,14 @@ const Faculty = {
 
         const query = 'INSERT INTO faculties(id,name) VALUES (DEFAULT,$1) RETURNING *;'
         const values: any = [name]
+        const res = await (client.query(query, values))
+
+        return res.rows;
+    },
+
+    deleteById: async (id: number): Promise<IFaculty[] | []> => {
+        const query = 'DELETE FROM faculties WHERE id = $1 RETURNING *;'
+        const values: any = [id]
         const res = await (client.query(query, values))
 
         return res.rows;

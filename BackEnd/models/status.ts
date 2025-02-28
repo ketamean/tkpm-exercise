@@ -44,6 +44,14 @@ const Status = {
         const res = await (client.query(query, values))
 
         return res.rows as IStatus[] | [];
+    },
+
+    deleteById: async (id: number): Promise<IStatus[] | []> => {
+        const query = 'DELETE FROM status WHERE id = $1 RETURNING *;'
+        const values: any = [id]
+        const res = await (client.query(query, values))
+
+        return res.rows as IStatus[] | [];
     }
 }
 

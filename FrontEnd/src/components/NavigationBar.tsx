@@ -19,6 +19,10 @@ export default function NavigationBar() {
                 <p className="w-30 font-bold flex justify-end">
                     <a href='/programs'>Program</a>
                 </p>
+                
+                <p className="w-30 font-bold flex justify-end">
+                    <a href='/status'>Status</a>
+                </p>
 
                 <p className="w-30 font-bold flex justify-end">
                     <a href='/admin'>Admin</a>

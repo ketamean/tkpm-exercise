@@ -48,6 +48,10 @@ function AddModal(props: AddModalProps): ReactElement {
                         }
                     })
                     .then(() => window.location.reload())
+                    .catch((err) => {
+                        alert(err)
+                        props.setAddModalState(false)
+                    })
                 props.setAddModalState(false);
             }}
             state={props.addModalState}
