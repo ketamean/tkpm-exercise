@@ -1,12 +1,11 @@
-// import { Program } from '../../models/Program'
 import { Faculty } from '../../models/Faculty' 
 import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
-import { axiosJson } from '../../config/axios'
 import FacultyModal from '../ProgramsPage/ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
+import { handleUpdateFacultySubmit, handleDeleteFacultySubmit } from './handler'
 
 Modal.setAppElement('#root')
 
@@ -35,13 +34,11 @@ function UpdateModal(props: UpdateModalProps) {
         <FacultyModal
             onSubmit={(e: FormEvent) => {
                 e.preventDefault()
-                axiosJson
-                    .put(`/faculties?id=${props.currentFaculty.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
-                    .then(() => window.location.reload())
-                    .catch((err) => {
-                        alert(err.message)
-                        props.setModalState(false)
-                    })
+                handleUpdateFacultySubmit(
+                    { id: props.currentFaculty.id },
+                    ((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value,
+                    props.setModalState
+                )
             }}
             state={props.modalState}
             setState={props.setModalState}
@@ -63,13 +60,10 @@ function DeleteModal(props: DeleteModalProps): any {
             <form className='flex flex-row justify-center gap-12 items-center pt-8'
                 onSubmit={(e: FormEvent) => {
                     e.preventDefault();
-                    axiosJson
-                        .delete(`/faculties?id=${props.faculty.id}`)
-                        .then(() => window.location.reload())
-                        .catch((e) => {
-                            console.log(e.message)
-                            window.location.reload()
-                        })
+                    handleDeleteFacultySubmit(
+                        { id: props.faculty.id },
+                        props.setDeleteModalState
+                    )
                 }}
             >
                 <button type='button' onClick={() => props.setDeleteModalState(false)} className='text-black bg-zinc-200 h-12 w-24 rounded-xl font-bold cursor-pointer'>Cancel</button>
