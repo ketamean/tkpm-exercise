@@ -1,7 +1,7 @@
 export interface AdminConfig {
-    phonenumberPattern: RegExp;
-    emailPatterns: Array<RegExp>;
-    deleteStudentSeconds: number;
-    applyFlag: boolean;
-    studentStatusPrecedences: {[id: number]: string}
+    PhoneNumberPattern: string | null,
+    EmailPattern: string | null,
+    DeleteStudentSeconds: number | null,
+    ApplyFlag: boolean | null,
+    StudentStatusPrecedences: number[] | null
 }

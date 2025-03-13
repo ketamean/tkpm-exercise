@@ -1,26 +1,20 @@
 import { isContext } from 'vm';
-import { getAdminConfig } from '../config/adminConfig/adminConfig'
-
+import adminConfigModel, { IAdminConfig } from '../models/adminConfig'
 class Verifier {
     async email(email: string): Promise<boolean> {
-      const config = await getAdminConfig();
-      if (config && config.applyFlag && config.emailPatterns) {
-        (config.emailPatterns as Array<RegExp>).forEach((regex: RegExp) => {
-          if (regex.test(email)) {
-            console.log(regex)
-            return true
-          }
-        })
-        return false
+      const config = (await adminConfigModel.getAdminConfig());
+      
+      if (config && config.ApplyFlag && config.EmailPattern) {
+        return RegExp(config.EmailPattern).test(email);
       }
       // else
       return true
     }
   
     async phoneNumber(phoneNumber: string): Promise<boolean> {
-      const config = await getAdminConfig();
-      if (config && config.applyFlag && config.phonenumberPattern) {
-        return (config.phonenumberPattern as RegExp).test(phoneNumber);
+      const config = await adminConfigModel.getAdminConfig();
+      if (config && config.ApplyFlag && config.PhoneNumberPattern) {
+        return RegExp(config.PhoneNumberPattern).test(phoneNumber);
       }
       // else
       return true

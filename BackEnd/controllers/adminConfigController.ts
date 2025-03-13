@@ -1,24 +1,13 @@
-import { getAdminConfig, setAdminConfig, configLabels } from '../config/adminConfig/adminConfig'
+import adminConfigModel, { IAdminConfig } from '../models/adminConfig'
 
 import { Request, Response } from 'express';
 
 const controllers = {
     get: async (req: Request, res: Response): Promise<any> => {
         try {
-            const data = await getAdminConfig();
-            configLabels.forEach((label) => {
-                switch (label) {
-                    case 'phonenumberPattern':
-                        data[label] = data[label].toString()
-                        break
-                    case 'emailPatterns':
-                        data[label] = data[label].map((pattern: RegExp) => pattern.toString())
-                        break
-                    default:
-                        data[label] = data[label]
-                        break
-                }
-            })
+            const data = await adminConfigModel.getAdminConfig();
+            if (data === null) throw Error('Error getting admin config');
+            console.log(data)
             return res.status(200).json( { ...data } )
         } catch (e) {
             return res.status(500).json( {message: e } )
@@ -27,14 +16,27 @@ const controllers = {
 
     put: async (req: Request, res: Response): Promise<any> => {
         try {
-            const q = req.body as {[key: string]: any};
-            setAdminConfig(q)
-            return res.status(200)
+            const configQuery = adminConfigModel.getInstanceFromObject(req.body);
+            await adminConfigModel.setAdminConfig(configQuery)
+            console.log('done')
+            return res.status(200).json( {message: 'done' })
         } catch (e) {
             console.log(e)
-            return res.status(500).json( {message: `Cannot change admin config: ${e}`, data: getAdminConfig()} )
+            return res.status(500).json( {message: `Cannot change admin config: ${e}`, data: adminConfigModel.getAdminConfig()} )
         }
     },
-}
 
-export default controllers
+    delete: async (req: Request, res: Response): Promise<any> => {
+        try {
+            const { field } = req.query
+            const data = await adminConfigModel.setAdminConfigField(field as string, null);
+            if (data === null) throw Error('Error getting admin config');
+            data as IAdminConfig
+            return res.status(200).json( { ...data } )
+        } catch (e) {
+            return res.status(500).json( {message: e } )
+        }
+    }
+};
+
+export default controllers;
