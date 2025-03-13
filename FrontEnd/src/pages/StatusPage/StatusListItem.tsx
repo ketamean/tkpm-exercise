@@ -4,7 +4,7 @@ import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
-import axios from 'axios'
+import { axiosJson } from '../../config/axios'
 import StatusModal from '../ProgramsPage/ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
 

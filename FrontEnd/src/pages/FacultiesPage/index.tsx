@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { axiosJson } from '../../config/axios'
 import { Faculty } from '../../models/Faculty'
 import FacultyModal from '../ProgramsPage/ProgramModal'
 // import AbstractList from "../../components/AbstractList";
@@ -17,13 +17,9 @@ function AddModal(props: AddModalProps) {
             e.preventDefault();
             const data = new FormData(e.target as HTMLFormElement);
             // console.log(data)
-            axios
-                .post('http://localhost:3000/faculties', data, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(() => window.location.reload())
+            axiosJson
+                .post('/faculties', data)
+                .then(() => window.location.reload());
             props.setModalState(false);
         }}
             state={props.modalState}
@@ -38,8 +34,8 @@ export default function FacultiesPage() {
     const [addModalState, setAddModalState] = useState<boolean>(false)
     useEffect(() => {
       try {
-        axios
-          .get('http://localhost:3000/faculties')
+        axiosJson
+          .get('/faculties')
           .then((res) => {
             setFaculties(res.data.faculties)
           })

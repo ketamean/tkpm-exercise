@@ -1,5 +1,4 @@
 import { ReactElement, useState, useEffect, FormEvent } from "react";
-// import Modal from 'react-modal'
 import { dataOnSubmit, fetchAdminConfig, removeConfig } from './handler'
 import { AdminConfig } from "../../models/AdminConfig";
 
@@ -12,8 +11,6 @@ interface ConfigProps extends AdminConfig {
 }
 
 function Config(props: ConfigProps): ReactElement {
-    // let {PhoneNumberPattern, EmailPattern, DeleteStudentSeconds, ApplyFlag, StudentStatusPrecedences} = props;
-    // const [addEmailPatternModal, setAddEmailPatternModal] = useState<boolean>(false);
     return (
         <div className="flex flex-col gap-y-4 w-full justify-center items-center">
             <div className='flex flex-row gap-x-4 w-full h-12 items-center'>
@@ -52,7 +49,7 @@ function Config(props: ConfigProps): ReactElement {
                 <button
                     type="button"
                     className="w-36 h-full bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 cursor-pointer"
-                    onClick={() => removeConfig('PhoneNumberPattern')}
+                    onClick={() => removeConfig('EmailPattern')}
                 >
                     Remove
                 </button>
@@ -88,7 +85,9 @@ export default function Admin(): ReactElement {
     let [DeleteStudentSeconds, setDeleteStudentSeconds] = useState<number>(0);
     let [ApplyFlag, setApplyFlag] = useState<boolean>(false);
     let [StudentStatusPrecedences, setStudentStatusPrecedences] = useState<number[]>([]);
-    useEffect(() => fetchAdminConfig(setPhonenumberPattern, setEmailPattern, setDeleteStudentSeconds, setApplyFlag, setStudentStatusPrecedences), []);
+    useEffect(() => 
+        fetchAdminConfig(setPhonenumberPattern, setEmailPattern, setDeleteStudentSeconds, setApplyFlag, setStudentStatusPrecedences)
+    , []);
     return (
         <div className='p-4 bg-white rounded-b-lg flex flex-col gap-4 h-full w-full'>
             <form onSubmit={(e: FormEvent) => e.preventDefault()} className="flex flex-col gap-y-4 w-full justify-center items-center">

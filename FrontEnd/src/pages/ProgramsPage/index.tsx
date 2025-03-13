@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { axiosJson } from '../../config/axios'
 import { Program } from '../../models/Program'
 import ProgramModal from './ProgramModal'
 import ProgramList from "./ProgramList";
@@ -11,22 +11,20 @@ interface AddModalProps {
 function AddModal(props: AddModalProps) {
     return (
         <ProgramModal
-        onSubmit={(e) => {
-            e.preventDefault();
-            const data = new FormData(e.target as HTMLFormElement);
-            // console.log(data)
-            axios
-                .post('http://localhost:3000/programs', data, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(() => window.location.reload())
-            props.setModalState(false);
-        }}
+            onSubmit={(e) => {
+                e.preventDefault();
+                const data = new FormData(e.target as HTMLFormElement);
+                axiosJson
+                    .post('http://localhost:3000/programs', data, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(() => window.location.reload())
+                props.setModalState(false);
+            }}
             state={props.modalState}
             setState={props.setModalState}
-            // allData={props.allPrograms}
         />
     )
 }

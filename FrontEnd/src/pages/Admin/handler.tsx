@@ -39,11 +39,10 @@ export function fetchAdminConfig(setPhonenumberPattern: (state: string) => void,
                 ApplyFlag: res.data.ApplyFlag,
                 StudentStatusPrecedences: res.data.StudentStatusPrecedences
             }
-            console.log(data)
             setPhonenumberPattern(data.PhoneNumberPattern? data.PhoneNumberPattern : '');
             setEmailPattern(data.EmailPattern? data.EmailPattern : '');
             setDeleteStudentSeconds(data.DeleteStudentSeconds? data.DeleteStudentSeconds : 0);
-            setApplyFlag(data.ApplyFlag? data.ApplyFlag : true);
+            setApplyFlag(typeof data.ApplyFlag === 'boolean' ? data.ApplyFlag : true);
             setStudentStatusPrecedences(data.StudentStatusPrecedences? data.StudentStatusPrecedences : []);
         })
         .catch((err) => {

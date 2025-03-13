@@ -6,7 +6,7 @@ import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState } from 'react'
-import axios from 'axios'
+import { handleUpdateStudentSubmit, handleDeleteStudentSubmit } from './handler'
 import StudentModal from './StudentModal'
 
 Modal.setAppElement('#root')
@@ -44,17 +44,7 @@ function UpdateModal(props: UpdateModalProps): any {
                 e.preventDefault()
                 const data = new FormData(e.target as HTMLFormElement)
                 console.log(data)
-                axios
-                    .put(`http://localhost:3000/students?id=${props.student.id}`, data, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(() => window.location.reload())
-                    .catch((err) => {
-                        alert(err)
-                        props.setUpdateModalState(false)
-                    })
+                handleUpdateStudentSubmit({id: props.student.id}, data, props.setUpdateModalState)
             }}
             state={props.updateModalState}
             setState={props.setUpdateModalState}
@@ -80,9 +70,7 @@ function DeleteModal(props: DeleteModalProps): any {
                 onSubmit={(e) => {
                     e.preventDefault();
                     console.log('Delete student');
-                    axios
-                        .delete(`http://localhost:3000/students?id=${props.student.id}`)
-                        .then(() => window.location.reload())
+                    handleDeleteStudentSubmit({id: props.student.id}, props.setDeleteModalState);
                 }}
             >
                 <button type='button' onClick={() => props.setDeleteModalState(false)} className='text-black bg-zinc-200 h-12 w-24 rounded-xl font-bold cursor-pointer'>Cancel</button>

@@ -1,5 +1,5 @@
 import searchIcon from '../assets/searchIcon.svg'
-import axios from 'axios'
+import { axiosJson } from '../config/axios'
 import { Student } from '../models/Student'
 
 interface SearchBarProps {
@@ -22,8 +22,8 @@ export default function SearchBar(props: SearchBarProps): any {
                 // if (form.searchContent.value as string === normalizedStr) {
 
                 // }
-                axios
-                    .get(`http://localhost:3000/students?${form.criteria.value}=${form.searchContent.value}`)
+                axiosJson
+                    .get(`/students?${form.criteria.value}=${form.searchContent.value}`)
                     .then((res) => {
                         // console.log(res.data)
                         if (res.data?.students)

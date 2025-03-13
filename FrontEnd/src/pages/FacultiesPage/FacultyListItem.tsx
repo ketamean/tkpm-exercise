@@ -4,7 +4,7 @@ import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
-import axios from 'axios'
+import { axiosJson } from '../../config/axios'
 import FacultyModal from '../ProgramsPage/ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
 
@@ -35,8 +35,8 @@ function UpdateModal(props: UpdateModalProps) {
         <FacultyModal
             onSubmit={(e: FormEvent) => {
                 e.preventDefault()
-                axios
-                    .put(`http://localhost:3000/faculties?id=${props.currentFaculty.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
+                axiosJson
+                    .put(`/faculties?id=${props.currentFaculty.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
                     .then(() => window.location.reload())
                     .catch((err) => {
                         alert(err.message)
@@ -45,7 +45,6 @@ function UpdateModal(props: UpdateModalProps) {
             }}
             state={props.modalState}
             setState={props.setModalState}
-            // allData={props.allFaculties}
             initValue={props.currentFaculty}
         />
     )
@@ -64,8 +63,8 @@ function DeleteModal(props: DeleteModalProps): any {
             <form className='flex flex-row justify-center gap-12 items-center pt-8'
                 onSubmit={(e: FormEvent) => {
                     e.preventDefault();
-                    axios
-                        .delete(`http://localhost:3000/faculties?id=${props.faculty.id}`)
+                    axiosJson
+                        .delete(`/faculties?id=${props.faculty.id}`)
                         .then(() => window.location.reload())
                         .catch((e) => {
                             console.log(e.message)

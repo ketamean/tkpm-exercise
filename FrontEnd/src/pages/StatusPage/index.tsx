@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { axiosJson } from '../../config/axios'
 import { Status } from '../../models/Status'
 import StatusModal from '../ProgramsPage/ProgramModal'
 // import AbstractList from "../../components/AbstractList";

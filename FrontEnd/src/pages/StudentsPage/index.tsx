@@ -6,11 +6,12 @@ import { Status } from '../../models/Status'
 import SearchBar from '../../components/SearchBar'
 import Modal from 'react-modal'
 import { useState, useEffect, ReactElement, FormEvent } from 'react'
-import axios from 'axios'
+import {handleAddStudentSubmit, handleFileExportCSV, handleFileExportJson, handleFileImportMultiple, handleFileImportSingle} from './handler'
 import StudentModal from './StudentModal'
-
+import { MetadataState } from './types'
 import {processStudentCSV} from '../../utils/processCsv'
 import {processStudentJSON} from '../../utils/processJson'
+import { fetchStudents } from './handler'
 
 interface StudentMainProps {
     students: Student[];
@@ -28,31 +29,16 @@ interface AddModalProps {
     setAddModalState: (state: boolean) => void;
 }
 
-function sortStudentCompare(a: Student, b: Student): number {
-    return a.id < b.id? -1: 1;
-}
-
 function AddModal(props: AddModalProps): ReactElement {
     return (
         <StudentModal
             allPrograms={props.programs}
             allFaculties={props.faculties}
             allStatus={props.status}
-            onSubmit={(e: FormEvent) => {
+            onSubmit={async (e: FormEvent) => {
                 e.preventDefault();
                 const data = new FormData(e.target as HTMLFormElement);
-                axios
-                    .post('http://localhost:3000/students', data, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(() => window.location.reload())
-                    .catch((err) => {
-                        alert(err)
-                        props.setAddModalState(false)
-                    })
-                props.setAddModalState(false);
+                handleAddStudentSubmit(data, props.setAddModalState);
             }}
             state={props.addModalState}
             setState={props.setAddModalState}
@@ -79,65 +65,14 @@ function FileImportExportModal(props: FileImportExportModalProps): ReactElement 
                 <div className='flex flex-row gap-x-4 w-full h-auto'>
                     <button
                         className='border-1 border-blue-500 text-blue-500 px-4 py-2 font-semibold rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white'
-                        onClick={() => {
-                            axios
-                                .get('http://localhost:3000/students/')
-                                .then(async (response) => {
-                                    const students: Array<Student> = response.data.students.sort(sortStudentCompare);
-                                    if (students.length === 0) {
-                                        alert('No data to export');
-                                        return;
-                                    }
-                                    const header = Object.keys(students[0]).map((head) => String(head)).join(',');
-                                    const data = students.map((student) => Object.values(student).map((val) => String(val)).join(',')).join('\n');
-                                    
-                                    const fileContent = header + '\n' + data
-                                    const blob = new Blob([fileContent], { type: 'text/csv' });
-                                    const url = URL.createObjectURL(blob);
-                                    const link = document.createElement('a');
-                                    link.href = url;
-                                    link.download = 'students.csv';
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                    URL.revokeObjectURL(url);
-
-                                })
-                                .catch((error) => {
-                                    console.error('There was an error exporting the data!', error);
-                                });
-                        }}
+                        onClick={() => handleFileExportCSV()}
                     >
                         Export to CSV
                     </button>
 
                     <button
                         className='border-1 border-blue-500 text-blue-500 px-4 py-2 font-semibold rounded-xl cursor-pointer hover:bg-blue-500 hover:text-white'
-                        onClick={() => {
-                            axios
-                                .get('http://localhost:3000/students/')
-                                .then(async (response) => {
-                                    const students: Array<Student> = response.data.students.sort(sortStudentCompare);
-                                    if (students.length === 0) {
-                                        alert('No data to export');
-                                        return;
-                                    }
-                                    const fileContent = JSON.stringify(students, null, 2);
-                                    const blob = new Blob([fileContent], { type: 'text/json' });
-                                    const url = URL.createObjectURL(blob);
-                                    const link = document.createElement('a');
-                                    link.href = url;
-                                    link.download = 'students.json';
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    document.body.removeChild(link);
-                                    URL.revokeObjectURL(url);
-
-                                })
-                                .catch((error) => {
-                                    console.error('There was an error exporting the data!', error);
-                                });
-                        }}
+                        onClick={() => handleFileExportJson()}
                     >
                         Export to JSON
                     </button>
@@ -235,30 +170,9 @@ function StudentMain(props: StudentMainProps): any {
                         if (students.length === 0) {
                             alert('You added an empty file')
                         } else if (students.length === 1) {
-                            axios
-                                .post('http://localhost:3000/students', students[0], {
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then((res) => {
-                                    alert(res.data)
-                                    window.location.reload()
-                                })
-                                .catch((err) => {
-                                    alert(err)
-                                })
+                            handleFileImportSingle(students[0])
                         } else {
-                            axios
-                                .post('http://localhost:3000/students', JSON.stringify(students), {
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                })
-                                .then(() => window.location.reload())
-                                .catch((err) => {
-                                    alert(err)
-                                })
+                            handleFileImportMultiple(students)
                         }
                     } else {
                         alert('No file selected')
@@ -269,32 +183,10 @@ function StudentMain(props: StudentMainProps): any {
     )
 }
 
-interface MetadataState {
-    programs: Program[];
-    faculties: Faculty[];
-    status: Status[];
-  }
-
 export default function StudentsPage() {
     const [metadata, setMetadata] = useState<MetadataState>({programs:[], status: [], faculties: []});
     const [students, setStudents] = useState<Student[]>([]);
-    useEffect(() => {
-      try {
-        axios
-          .get('http://localhost:3000/students')
-          .then((res) => {
-            setMetadata({
-              programs: res.data.programs,
-              faculties: res.data.faculties,
-              status: res.data.status
-            });
-            setStudents((res.data.students as Array<Student>).sort(sortStudentCompare));
-          })
-      } catch (e) {
-        console.error(e);
-        alert(e);
-      }
-    }, []);
+    useEffect(() => fetchStudents(setMetadata, setStudents), []);
   
     return (
         <StudentMain
