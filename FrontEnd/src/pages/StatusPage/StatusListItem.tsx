@@ -1,12 +1,12 @@
-// import { Program } from '../../models/Program'
+// Update imports to use the handlers from handler.tsx
 import { Status } from '../../models/Status' 
 import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
-import { axiosJson } from '../../config/axios'
 import StatusModal from '../ProgramsPage/ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
+import { handleUpdateStatusSubmit, handleDeleteStatusSubmit } from './handler'
 
 Modal.setAppElement('#root')
 
@@ -35,13 +35,7 @@ function UpdateModal(props: UpdateModalProps) {
         <StatusModal
             onSubmit={(e: FormEvent) => {
                 e.preventDefault()
-                axios
-                    .put(`http://localhost:3000/status?id=${props.currentStatus.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
-                    .then(() => window.location.reload())
-                    .catch((err) => {
-                        alert(err.message)
-                        props.setModalState(false)
-                    })
+                handleUpdateStatusSubmit(e, props.currentStatus.id, props.setModalState)
             }}
             state={props.modalState}
             setState={props.setModalState}
@@ -64,13 +58,7 @@ function DeleteModal(props: DeleteModalProps): any {
             <form className='flex flex-row justify-center gap-12 items-center pt-8'
                 onSubmit={(e: FormEvent) => {
                     e.preventDefault();
-                    axios
-                        .delete(`http://localhost:3000/status?id=${props.status.id}`)
-                        .then(() => window.location.reload())
-                        .catch((e) => {
-                            console.log(e.message)
-                            window.location.reload()
-                        })
+                    handleDeleteStatusSubmit(e, props.status.id)
                 }}
             >
                 <button type='button' onClick={() => props.setDeleteModalState(false)} className='text-black bg-zinc-200 h-12 w-24 rounded-xl font-bold cursor-pointer'>Cancel</button>
