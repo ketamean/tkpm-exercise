@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { axiosJson } from '../../config/axios'
 import { Program } from '../../models/Program'
 import ProgramModal from './ProgramModal'
 import ProgramList from "./ProgramList";
+import { fetchPrograms, handleAddProgramSubmit } from "./handler";
+
 interface AddModalProps {
     allPrograms: Program[];
     modalState: boolean;
@@ -14,14 +15,7 @@ function AddModal(props: AddModalProps) {
             onSubmit={(e) => {
                 e.preventDefault();
                 const data = new FormData(e.target as HTMLFormElement);
-                axiosJson
-                    .post('http://localhost:3000/programs', data, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(() => window.location.reload())
-                props.setModalState(false);
+                handleAddProgramSubmit(data, props.setModalState);
             }}
             state={props.modalState}
             setState={props.setModalState}
@@ -32,17 +26,9 @@ function AddModal(props: AddModalProps) {
 export default function ProgramsPage() {
     const [programs, setPrograms] = useState<Program[]>([]);
     const [addModalState, setAddModalState] = useState<boolean>(false)
+    
     useEffect(() => {
-      try {
-        axios
-          .get('http://localhost:3000/programs')
-          .then((res) => {
-            setPrograms(res.data.programs)
-          })
-      } catch (e) {
-        console.error(e);
-        alert(e);
-      }
+      fetchPrograms(setPrograms);
     }, []);
   
     return (
@@ -67,12 +53,5 @@ export default function ProgramsPage() {
             </div>
             <AddModal modalState={addModalState} setModalState={setAddModalState} allPrograms={programs}/>
         </>
-        // <StudeAddModalntMain
-        //     students={students}
-        //     setStudents={setStudents}
-        //     programs={metadata.programs}
-        //     faculties={metadata.faculties}
-        //     status={metadata.status}
-        // />
     )
 }

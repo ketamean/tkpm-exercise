@@ -3,9 +3,9 @@ import editIcon from '../../assets/editIcon.svg'
 import deleteIcon from '../../assets/deleteIcon.svg'
 import Modal from 'react-modal'
 import { useState, FormEvent } from 'react'
-import { axiosJson } from '../../config/axios'
 import ProgramModal from './ProgramModal'
 import AbstractListItem from '../../components/AbstractListItem'
+import { handleUpdateProgramSubmit, handleDeleteProgramSubmit } from './handler'
 
 Modal.setAppElement('#root')
 
@@ -33,18 +33,12 @@ function UpdateModal(props: UpdateModalProps) {
     return (
         <ProgramModal
             onSubmit={(e: FormEvent) => {
-                e.preventDefault()
-                axios
-                    .put(`http://localhost:3000/programs?id=${props.currentProgram.id}&name=${((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value}`)
-                    .then(() => window.location.reload())
-                    .catch((err) => {
-                        alert(err.message)
-                        props.setModalState(false)
-                    })
+                e.preventDefault();
+                const nameValue = ((e.target as HTMLFormElement).querySelector('input[name=name]') as HTMLInputElement).value;
+                handleUpdateProgramSubmit({id: props.currentProgram.id}, nameValue, props.setModalState);
             }}
             state={props.modalState}
             setState={props.setModalState}
-            // allData={props.allPrograms}
             initValue={props.currentProgram}
         />
     )
@@ -63,15 +57,7 @@ function DeleteModal(props: DeleteModalProps): any {
             <form className='flex flex-row justify-center gap-12 items-center pt-8'
                 onSubmit={(e) => {
                     e.preventDefault();
-                    console.log('Delete program');
-                    axios
-                        .delete(`http://localhost:3000/programs?id=${props.program.id}`)
-                        .then(() => window.location.reload())
-                        .catch((e) => {
-                            console.error(e)
-                            alert(e)
-                            props.setDeleteModalState(false)
-                        })
+                    handleDeleteProgramSubmit({id: props.program.id}, props.setDeleteModalState);
                 }}
             >
                 <button type='button' onClick={() => props.setDeleteModalState(false)} className='text-black bg-zinc-200 h-12 w-24 rounded-xl font-bold cursor-pointer'>Cancel</button>
@@ -85,16 +71,9 @@ export default function ProgramListItem(props: ProgramListItemProps): any {
     const [updateModalState, setUpdateModalState] = useState(false);
     const [deleteModalState, setDeleteModalState] = useState(false);
     return (
-        // <>
-        //     <tr className='h-full border-b-1 border-gray-300 overflow-scroll'>
-        //     </tr>
-        //     
-        //     
-        // </>
         <AbstractListItem
             children={
                 <>
-                    {/* <td className='text-wrap w-24 pr-4'>{props.program.id}</td> */}
                     <td className='text-wrap w-full pr-4'>{props.program.name}</td>
                     <td className='h-full pr-2 cursor-pointer' onClick={() => setUpdateModalState(true)}><img src={editIcon} alt="Update program's info" title="Update program's info" /></td>
                     <td className='h-full pr-2 cursor-pointer' onClick={() => setDeleteModalState(true)}><img src={deleteIcon} alt="Delete student" title="Delete student" /></td>
