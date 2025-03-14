@@ -8,9 +8,7 @@ export default {
             const id = req.query.id?.toString();
             const purpose = req.query.purpose?.toString();
             if (!id || !purpose) return res.status(400).json( {message: 'Missing required fields'} );
-            console.log(id, purpose)
             const student: IStudent[] | null = await studentModels.getById(id);
-            console.log(student)
             if (!student) {
                 throw new Error('Student not found');
             }
@@ -32,7 +30,6 @@ export default {
                 exprDate,
                 grantDate
             }
-            console.log(info)
             return res.status(200).json({ info });
         } catch (e) {
             console.error(e)

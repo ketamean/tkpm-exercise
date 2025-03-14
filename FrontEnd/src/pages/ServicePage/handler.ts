@@ -1,6 +1,7 @@
 import { axiosJson } from "../../config/axios";
 import outputMD from "../../utils/outputMD";
 import outputHTML from "../../utils/outputHTML";
+import outputPDF from "../../utils/outputPDF";
 
 async function fetchStudentVerificationPaperwork(studentId: string, purpose: string) {
     const {data} = await axiosJson
@@ -13,13 +14,20 @@ export async function handleStudentVerificationPaperwork(studentId: string, purp
     try {
         const data = await fetchStudentVerificationPaperwork(studentId, purpose);
 
-        let fileContent = '';
+        let fileContent: any;
+        let contentType: string = '';
         switch (fileType) {
             case 'md':
                 fileContent = outputMD(data, template)
+                contentType = 'text'
                 break;
             case 'html':
                 fileContent = await outputHTML(data, template)
+                contentType = 'text'
+                break;
+            case 'pdf':
+                fileContent = await outputPDF(data, template)
+                contentType = 'application'
                 break;
             default:
                 return;
@@ -27,7 +35,7 @@ export async function handleStudentVerificationPaperwork(studentId: string, purp
     
         const fileName = `${studentId}.${fileType}`
     
-        const blob = new Blob([fileContent], { type: `text/${fileType}` });
+        const blob = new Blob([fileContent], { type: `${contentType}/${fileType}` });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;

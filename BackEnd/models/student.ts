@@ -45,7 +45,6 @@ const Student = {
             query += ' AND s.studentid = $1;';
             values = [id]
         }
-        console.log(query, values)
         const res = await (client.query(query, values))
         if (!res.rows.length) return null
         return res.rows as IStudent[];

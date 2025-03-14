@@ -33,6 +33,11 @@ export default function ServicePage() {
                     <input type="radio" id="filetype2" name="filetype" value="html" required/>
                     <label htmlFor="filetype2">HTML</label>
                 </div>
+
+                <div className='flex flex-row gap-x-2'>
+                    <input type="radio" id="filetype3" name="filetype" value="pdf" required/>
+                    <label htmlFor="filetype3">PDF</label>
+                </div>
             </div>
 
             <button className='bg-blue-500 w-28 text-white p-2 rounded-xl hover:bg-blue-700'
