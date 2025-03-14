@@ -4,7 +4,62 @@ import programModels from "../models/program";
 import facultyModels from "../models/faculty";
 import statusModels from "../models/status";
 import isNumericString from "../utils/checkNumericString";
+import { PrimaryExpression } from "typescript";
 
+async function getStudentByConstraint(prevData: IStudent[] | null, constraint: string, getter: (val: any) => Promise<IStudent[] | null>, compare: (student: IStudent, constraint: string) => boolean) {
+    let data = prevData
+    if (data === null)
+        data = await getter(constraint);
+    else {
+        const tmpRes: IStudent[] = [];
+        (data as IStudent[]).forEach((student: IStudent) => {
+            if (compare(student, constraint))
+                tmpRes.push(student);
+        })
+        data = tmpRes;
+    }
+
+    return data
+}
+
+async function getStudentByStudentId(prevData: IStudent[] | null, studentId: string) {
+    return await getStudentByConstraint(
+        prevData,
+        studentId,
+        studentModels.getById,
+        (student: IStudent, constraint: string) => constraint.includes(student.id)
+    )
+}
+
+async function getStudentByFacultyName(prevData: IStudent[] | null, facName: string) {
+    return await getStudentByConstraint(
+        prevData,
+        facName,
+        studentModels.getByFacultyName,
+        (student: IStudent, constraint: string) => constraint.includes(student.faculty as string)
+    )
+}
+
+async function getStudentByStudentName(prevData: IStudent[] | null, stuName: string) {
+    // <!!> case&accent insensitive
+    return await getStudentByConstraint(
+        prevData,
+        stuName,
+        studentModels.getByName,
+        (student: IStudent, constraint: string) => constraint.includes(student.name)
+    )
+}
+
+async function postSingleStudent(student: IStudent): Promise<boolean> {
+    student.program = isNumericString(student.program as string)? student.program : (await programModels.getIdByname(student.program as string))
+    student.faculty = isNumericString(student.faculty as string)? student.faculty : await facultyModels.getIdByName(student.faculty as string);
+    student.status = isNumericString(student.status as string)? student.status : await statusModels.getIdByName(student.status as string);
+    switch((await studentModels.addNewStudent(student)).length) {
+        case 0: return false;
+        case 1: return true;
+        default: throw new Error('postSingleStudent error: more than 1 student added');
+    }
+}
 
 const controller = {
     get: async (req: Request, res: Response): Promise<any> => {
@@ -21,42 +76,9 @@ const controller = {
             }
             // else
             let data: IStudent[] | null = null;
-            if (query.faculty) {
-                if (data === null)
-                    data = await studentModels.getByFacultyName(query.faculty as string);
-                else {
-                    const tmpRes: IStudent[] = [];
-                    (data as IStudent[]).forEach((student: IStudent) => {
-                        if (student.faculty === query.faculty)
-                            tmpRes.push(student);
-                    })
-                    data = tmpRes;
-                }
-            }
-            if (query.id) {
-                if (data === null)
-                    data = await studentModels.getById(query.id as string);
-                else {
-                    const tmpRes: IStudent[] = [];
-                    (data as IStudent[]).forEach((student: IStudent) => {
-                        if (student.id === query.id)
-                            tmpRes.push(student);
-                    })
-                    data = tmpRes;
-                }
-            }
-            if (query.name) {
-                if (data === null)
-                    data = await studentModels.getByName(query.name as string);
-                else {
-                    const tmpRes: IStudent[] = [];
-                    (data as IStudent[]).forEach((student: IStudent) => {
-                        if (student.name === query.name)
-                            tmpRes.push(student);
-                    })
-                    data = tmpRes;
-                }
-            }
+            if (query.faculty) data = await getStudentByFacultyName(data, query.faculty as string);
+            if (query.id) data = await getStudentByStudentId(data, query.id as string);
+            if (query.name) data = await getStudentByStudentName(data, query.name as string);
 
             return res.status(200).json({...metadata, students: data});
         } catch (e: any) {
@@ -73,22 +95,16 @@ const controller = {
                 let countFail = 0;
                 const students = req.body;
                 students.forEach(async (student) => {
-                    student.program = isNumericString(student.program)? student.program : await programModels.getIdByname(student.program as string)
-                    student.faculty = isNumericString(student.faculty)? student.faculty : await facultyModels.getIdByName(student.faculty as string)
-                    student.status = isNumericString(student.status)? student.status : await statusModels.getIdByName(student.status as string)
-                    if ((await studentModels.addNewStudent(student)).length) {
-                        countSuccess++;
-                    } else {
-                        countFail++;
-                    }
+                    if (await postSingleStudent(student)) countSuccess++;
+                    else countFail++;
                 })
                 message = `Added successfully ${countSuccess}, failed ${countFail}`
             } else {
                 const student = req.body;
-                student.program = isNumericString(student.program)? student.program : (await programModels.getIdByname(student.program as string))
-                student.faculty = isNumericString(student.faculty)? student.faculty : await facultyModels.getIdByName(student.faculty as string);
-                student.status = isNumericString(student.status)? student.status : await statusModels.getIdByName(student.status as string);
-                (await studentModels.addNewStudent(student)).length? message='Success' : message='Student added failed'
+                if (await postSingleStudent(student))
+                    message = 'Added successfully';
+                else
+                    message = 'Failed to add student';
             }
             
             return res.status(200).json(message);
