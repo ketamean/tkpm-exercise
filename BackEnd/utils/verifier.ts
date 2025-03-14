@@ -19,16 +19,6 @@ class Verifier {
       // else
       return true
     }
-  
-    // facultyName(facultyName: string): boolean {
-    //   const facultyOptions = /^(Luật|Tiếng Anh thương mại|Tiếng Nhật|Tiếng Pháp)$/;
-    //   return facultyOptions.test(facultyName);
-    // }
-  
-    // studentStatus(studentStatus: string): boolean {
-    //   const statusOptions = /^(Undergraduate|Graduated|Dropped|Pause)$/;
-    //   return statusOptions.test(studentStatus);
-    // }
 }
 
 export default new Verifier();

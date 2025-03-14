@@ -8,9 +8,8 @@ export interface IAdminConfig {
     StudentStatusPrecedences: number[] | null
 }
 
-export default {
+const adminConfig = {
     getAdminConfig: async (): Promise<IAdminConfig | null> => {
-        console.info('Getting admin config')
         try {
             const query = `
                 SELECT phonenumberpattern, emailpattern, deletestudentseconds, applyflag, studentstatusprecedences
@@ -37,12 +36,11 @@ export default {
             // let query = "INSERT INTO adminConfig(ID"
             let query = "UPDATE adminconfig SET "
             let cnt = 0;
-            console.log(data)
             Object.entries(data).forEach(([key, val]: [string, any], idx: number) => {
                 if (val === null) return;
                 cnt++;
                 if (cnt > 1) query += ", ";
-                query += `${key.toLowerCase()} = $${cnt}`
+                
                 switch (key) {
                     case 'PhoneNumberPattern':
                         values.push(data.PhoneNumberPattern)
@@ -59,22 +57,13 @@ export default {
                     case 'StudentStatusPrecedences':
                         values.push(data.StudentStatusPrecedences)
                         break
+                    default:
+                        return
                 }
+                query += `${key.toLowerCase()} = $${cnt}`
             })
             query += " WHERE ID = 1 RETURNING *;"
-            console.log(query, values);
             const res = await client.query(query, values);
-            return res.rows[0] as IAdminConfig;
-        } catch (e) {
-            console.log(e)
-            return null;
-        }
-    },
-
-    setAdminConfigField: async (field: string, value: any): Promise<IAdminConfig | null> => {
-        try {
-            const query = `UPDATE adminconfig SET $1 = $2 WHERE ID = 1 RETURNING *;`
-            const res = await client.query(query, [field, value])
             return res.rows[0] as IAdminConfig;
         } catch (e) {
             console.log(e)
@@ -84,11 +73,27 @@ export default {
 
     getInstanceFromObject: (data: {[key: string]: any}): IAdminConfig => {
         return {
-            PhoneNumberPattern: data['PhoneNumberPattern'] || data['PhoneNumberPattern'.toLowerCase()] || null,
-            EmailPattern: data['EmailPattern'] || data['EmailPattern'.toLowerCase()] || null,
-            DeleteStudentSeconds: data['DeleteStudentSeconds'] || data['DeleteStudentSeconds'.toLowerCase()] || null,
-            ApplyFlag: data['ApplyFlag'] || data['ApplyFlag'.toLowerCase()] || null,
+            PhoneNumberPattern: data.PhoneNumberPattern || null,
+            EmailPattern: data.EmailPattern || null,
+            DeleteStudentSeconds: data.DeleteStudentSeconds || null,
+            ApplyFlag: typeof data.ApplyFlag === 'boolean'? data.ApplyFlag : null,
             StudentStatusPrecedences: data['StudentStatusPrecedences'] || data['StudentStatusPrecedences'.toLowerCase()] || null
         }
-    }
+    },
+
+    setAdminConfigField: async (field: string, value: any): Promise<IAdminConfig | null> => {
+        try {
+            const obj = adminConfig.getInstanceFromObject({});
+            if (!Object.keys(obj).includes(field)) throw(Error('Column name not found'));
+            const query = `UPDATE adminconfig SET ${field} = $1 WHERE ID = 1 RETURNING *;`
+            const values = [value]
+            const res = await client.query(query, values);
+            return res.rows[0] as IAdminConfig;
+        } catch (e) {
+            console.log(e)
+            return null;
+        }
+    },
 }
+
+export default adminConfig;

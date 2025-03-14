@@ -1,10 +1,6 @@
 import client from '../config/database'
 import verifier from '../utils/verifier'
-// type TGender = 'Male' | 'Female';
-// type TProgram = 'CLC' | 'TT';
-// type TStatus = 'Undergraduate' | 'Graduated' | 'Dropped' | 'Pause';
-// type TFaculty = 'Luật' | 'Tiếng Anh thương mại' | 'Tiếng Nhật' | 'Tiếng Pháp';
-
+import adminConfig from './adminConfig';
 
 export interface IStudent {
     id: string;
@@ -37,14 +33,22 @@ const Student = {
     },
 
     getById: async (id: string) => {
-        const query = `
+        let query = `
             SELECT s.studentid as id, s.name as name, s.dob as dob, s.gender as gender, f.name as faculty, s.year as year, p.name as program, s.address as address, s.email as email, s.phone as phone, sta.name as status
             FROM students s, faculties f, programs p, status sta
-            WHERE s.id LIKE $1 AND s.faculty = f.id AND s.program = p.id AND s.status = sta.id;`;
-        const values: any = [`${id}%`]
+            WHERE s.faculty = f.id AND s.program = p.id AND s.status = sta.id`;
+        let values: string[];
+        if (id.length < 8) {
+            query += ' AND s.studentid LIKE $1;';
+            values = [`${id}%`]
+        } else {
+            query += ' AND s.studentid = $1;';
+            values = [id]
+        }
+        console.log(query, values)
         const res = await (client.query(query, values))
-
-        return res.rows as IStudent[] | [];
+        if (!res.rows.length) return null
+        return res.rows as IStudent[];
     },
 
     getByFacultyName: async (fname: string) => {
@@ -106,12 +110,25 @@ const Student = {
 
     },
 
-    deleteStudentById: async (id: string) => {
-        const query = 'DELETE FROM students WHERE id = $1 RETURNING *;'
-        const values: any = [id]
-        const res = await (client.query(query, values))
+    deleteStudentByStudentId: async (id: string) => {
+        const limitedTime = (await adminConfig.getAdminConfig())?.DeleteStudentSeconds;
+        let query: string = '';
+        let values: any[] = [];
+        if (limitedTime !== null) {
+            query = `
+                DELETE FROM students
+                WHERE studentid = $1 AND sec_diff_to_now(created_at) < $2 RETURNING *;
+            `
+            values = [id, limitedTime];
+        } else {
+            query = 'DELETE FROM students WHERE studentid = $1 RETURNING *;'
+            values = [id];
+        }
 
-        return res.rows;
+        const res = await (client.query(query, values));
+
+        if (res.rows.length === 0) throw new Error('Delete 0 student');
+        return res.rows[0] 
     },
 
     updateStudentById: async (id: string, student: IStudent) => {

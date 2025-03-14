@@ -116,7 +116,7 @@ const controller = {
     delete: async (req: Request, res: Response): Promise<any> => {
         try {
             const query = req.query;
-            const data = await studentModels.deleteStudentById(query.id as string);
+            const data = await studentModels.deleteStudentByStudentId(query.id as string);
             return res.status(200).json(data);
         } catch (e) {
             console.log(e);

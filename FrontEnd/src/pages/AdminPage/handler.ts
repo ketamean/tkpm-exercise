@@ -5,11 +5,11 @@ export function dataOnSubmit(e: FormEvent, data: {[key: string]: any}): void {
     e.preventDefault();
     try {
         const dataToBeSent: {[key: string]: any} = {}
-        if (data['ApplyFlag'] !== undefined) dataToBeSent.ApplyFlag = data['ApplyFlag']
-        if (data['PhoneNumberPattern'] !== undefined) dataToBeSent.PhoneNumberPattern = data['PhoneNumberPattern']
-        if (data['EmailPattern'] !== undefined) dataToBeSent.EmailPattern = data['EmailPattern']
-        if (data['DeleteStudentSeconds'] !== undefined) dataToBeSent.DeleteStudentSeconds = data['DeleteStudentSeconds']
-        if (data['StudentStatusPrecedences'] !== undefined) dataToBeSent.StudentStatusPrecedences = data['StudentStatusPrecedences']
+        if (typeof data['ApplyFlag'] === 'boolean') dataToBeSent.ApplyFlag = data['ApplyFlag']
+        if (data['PhoneNumberPattern']) dataToBeSent.PhoneNumberPattern = data['PhoneNumberPattern']
+        if (data['EmailPattern']) dataToBeSent.EmailPattern = data['EmailPattern']
+        if (typeof data['DeleteStudentSeconds'] === 'number' && data['DeleteStudentSeconds'] <= 86400) dataToBeSent.DeleteStudentSeconds = data['DeleteStudentSeconds']
+        if (data['StudentStatusPrecedences']) dataToBeSent.StudentStatusPrecedences = data['StudentStatusPrecedences']
         axiosJson
             .put('/adminConfig', dataToBeSent)
             .then(() => window.location.reload())
